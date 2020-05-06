@@ -1,0 +1,114 @@
+﻿<Window x:Class="Marbas.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Marbas"
+        xmlns:utils="clr-namespace:Marbas.Utils"
+        xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+        xmlns:dataTypes="clr-namespace:Marbas.DataCore.DataTypes"
+        xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
+        mc:Ignorable="d" d:DataContext="{d:DesignInstance local:MainWindow}"
+        ShowInTaskbar="False"
+        AllowsTransparency="True"
+        WindowStyle="None"
+        WindowStartupLocation="Manual"
+        Title="MainWindow" Height="350" Width="400" WindowState="Normal">
+    <Window.InputBindings>
+        <KeyBinding Key="X" Modifiers="Control" Command="{Binding CloseCommand}"/>
+    </Window.InputBindings>
+    <Grid utils:GridHelper.Rows="10,1*,10">
+        <Grid utils:GridHelper.Rows="1*,30" utils:GridHelper.Columns="10,1*,10" Row="1">
+            <ListBox x:Name="ltb_tasks" 
+                     Grid.Row="0" Grid.Column="1"
+                     ItemsSource="{Binding Path=Core.AllTasks}">
+                <ListBox.ItemContainerStyle>
+                    <Style TargetType="ListBoxItem">
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="ListBoxItem">
+                                    <ContentPresenter/>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </ListBox.ItemContainerStyle>
+                <ListBox.ItemTemplate>
+                    <DataTemplate DataType="dataTypes:Tasks">
+                        <Grid utils:GridHelper.Rows="1*,1*">
+                            <Grid Row="0"
+                                  utils:GridHelper.Columns="1*,16*,1*,1*"
+                                  Margin="0,5">
+                                <CheckBox x:Name="Chb_isComplete"
+                                      Tag="{Binding Id}"
+                                      Grid.Column="0"
+                                      Checked="Chb_isComplete_OnChecked"/>
+                                <TextBlock x:Name="Tbl_text"
+                                       Grid.Column="1"
+                                       MaxWidth="300"
+                                       TextWrapping="Wrap"
+                                       TextDecorations="{Binding ElementName=Chb_isComplete, Path=IsChecked, Converter={StaticResource TextDecorationConverter}}"
+                                       Text="{Binding Text}"
+                                       Visibility="{Binding Display, Converter={StaticResource BoolToVis}}"
+                                       />
+                                <TextBox x:Name="Tbx_text"
+                                      Grid.Column="1"
+                                      MaxWidth="300"
+                                      TextWrapping="Wrap"
+                                      Text="{Binding Text}"
+                                      Visibility="{Binding Editing, Converter={StaticResource BoolToVis}}"
+                                      />
+                                <Button x:Name="Btn_Edit"
+                                    Tag="{Binding Id}"
+                                    Grid.Column="2"
+                                    MaxHeight="20"
+                                    BorderThickness="0"
+                                    Style="{StaticResource MyButtonStyle}" 
+                                    Click="Btn_Edit_OnClick">
+                                    <iconPacks:PackIconFontAwesome Kind="EditRegular" />
+                                </Button>
+                                <Button x:Name="Btn_Remove"
+                                    Tag="{Binding Id}"
+                                    Grid.Column="3"
+                                    MaxHeight="20"
+                                    BorderThickness="0"
+                                    Style="{StaticResource MyButtonStyle}"
+                                    Click="Btn_Remove_OnClick">
+                                    <iconPacks:PackIconFeatherIcons Kind="Trash2" />
+                                </Button>
+                            </Grid>
+                            <Grid x:Name="Grid_Alarms" 
+                                  Row="1"
+                                  ColumnSpan="4"
+                                  utils:GridHelper.Columns="1*,1*, 1*, 1*,1*, 1*,0.5*"
+                                  Margin= "0,5"
+                                  Visibility="{Binding Editing, Converter={StaticResource BoolToVis}}">
+                                <Button Grid.Column="1"
+                                        Tag="{Binding Id}"
+                                        Content="Set Alarm"
+                                        Click="ButtonBase_OnClick"/>
+                                <Label Grid.Column="4"
+                                       Content="End Date:"/>
+                                <DatePicker Grid.Column="5"
+                                            Width="100"
+                                            Tag="{Binding Id}"
+                                            SelectedDate="{Binding DateEnding}"
+                                            SelectedDateChanged="DatePicker_OnSelectedDateChanged"/>
+                            </Grid>
+                        </Grid>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+            <Grid utils:GridHelper.Columns="6*,1*,6*" 
+                  Row="1" Column="1">
+                <Button Grid.Column="1"
+                        x:Name="btn_AddTask"
+                        Style="{StaticResource MyButtonStyle}" 
+                        Click="Btn_AddTask_OnClick">
+                    <iconPacks:PackIconTypicons Kind="Plus"/>
+                </Button>
+            </Grid>
+
+        </Grid>
+    </Grid>
+</Window>
